@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FAP · Family Adoption Programme Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#f4f6fa;--bg2:#ffffff;--bg3:#edf0f7;
+  --border:#dfe3ec;--border2:#c9cfdd;
+  --text:#1a1d26;--text2:#4a5068;--text3:#8790a5;
+  --blue:#2563eb;--blue-light:#eff4ff;--blue-dark:#1a4fd6;
+  --green:#059669;--green-light:#ecfdf5;
+  --amber:#d97706;--amber-light:#fffbeb;
+  --rose:#dc2626;--rose-light:#fef2f2;
+  --purple:#7c3aed;--purple-light:#f3f0ff;
+  --font:'Outfit',sans-serif;
+  --mono:'JetBrains Mono',monospace;
+  --radius:12px;--radius-sm:8px;
+  --shadow:0 1px 3px rgba(0,0,0,0.06),0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md:0 4px 12px rgba(0,0,0,0.08);
+}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased;}
+
+/* Login */
+.login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:2rem;background:linear-gradient(135deg,#e8ecf8 0%,#f4f6fa 50%,#e8f4ec 100%);}
+.login-box{background:#fff;border:1px solid var(--border);border-radius:20px;padding:2.75rem 2.25rem;max-width:380px;width:100%;text-align:center;box-shadow:var(--shadow-md);}
+.login-icon{width:60px;height:60px;background:linear-gradient(135deg,var(--blue),var(--purple));border-radius:16px;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:1.15rem;color:#fff;margin-bottom:1.5rem;}
+.login-box h2{font-size:1.25rem;font-weight:700;margin-bottom:0.2rem;}
+.login-box .sub{font-size:0.8rem;color:var(--text3);margin-bottom:2rem;}
+.login-box input{width:100%;padding:0.8rem 1rem;background:var(--bg);border:1.5px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:var(--mono);font-size:0.85rem;outline:none;text-align:center;letter-spacing:3px;transition:border-color 0.2s;}
+.login-box input:focus{border-color:var(--blue);}
+.login-box input::placeholder{color:var(--text3);letter-spacing:0;font-family:var(--font);}
+.login-btn{width:100%;padding:0.8rem;background:var(--blue);border:none;border-radius:var(--radius-sm);color:#fff;font-family:var(--font);font-size:0.88rem;font-weight:600;cursor:pointer;margin-top:1rem;transition:background 0.2s;}
+.login-btn:hover{background:var(--blue-dark);}
+.login-error{margin-top:0.75rem;color:var(--rose);font-size:0.78rem;display:none;font-weight:500;}
+
+/* Header */
+.header{background:#fff;border-bottom:1px solid var(--border);padding:0.9rem 1.75rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 1px 2px rgba(0,0,0,0.03);}
+.header-left{display:flex;align-items:center;gap:0.85rem;}
+.h-logo{width:36px;height:36px;background:linear-gradient(135deg,var(--blue),var(--purple));border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.85rem;color:#fff;}
+.h-title{font-size:1rem;font-weight:700;}
+.h-sub{font-size:0.68rem;color:var(--text3);font-weight:500;margin-top:1px;}
+.header-right{display:flex;align-items:center;gap:0.65rem;}
+.badge{display:flex;align-items:center;gap:0.4rem;padding:0.3rem 0.7rem;border-radius:20px;font-size:0.7rem;font-weight:600;border:1px solid var(--border);background:var(--bg);}
+.badge .dot{width:6px;height:6px;border-radius:50%;}
+.badge.ok .dot{background:var(--green);box-shadow:0 0 5px rgba(5,150,105,0.4);}
+.badge.loading .dot{background:var(--amber);animation:blink 0.8s ease infinite;}
+.badge.err .dot{background:var(--rose);}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+.btn-sm{padding:0.3rem 0.65rem;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text3);font-family:var(--font);font-size:0.7rem;font-weight:500;cursor:pointer;transition:all 0.15s;}
+.btn-sm:hover{border-color:var(--rose);color:var(--rose);}
+
+.main{display:none;}.main.visible{display:block;}
+
+/* Forms Page */
+.forms-page{padding:1.75rem 2rem;max-width:1100px;margin:0 auto;}
+.forms-page h2{font-size:1.15rem;font-weight:700;margin-bottom:0.2rem;}
+.forms-page .pg-sub{font-size:0.8rem;color:var(--text3);margin-bottom:1.5rem;}
+.f-search-wrap{position:relative;max-width:380px;margin-bottom:1.25rem;}
+.f-search-wrap .ico{position:absolute;left:0.75rem;top:50%;transform:translateY(-50%);color:var(--text3);font-size:0.82rem;}
+.f-search{width:100%;padding:0.6rem 1rem 0.6rem 2.2rem;background:#fff;border:1.5px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:var(--font);font-size:0.82rem;outline:none;transition:border-color 0.2s;}
+.f-search:focus{border-color:var(--blue);}
+.f-search::placeholder{color:var(--text3);}
+.forms-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:0.85rem;}
+.f-card{background:#fff;border:1.5px solid var(--border);border-radius:var(--radius);padding:1.15rem;cursor:pointer;transition:all 0.2s;position:relative;}
+.f-card:hover{border-color:var(--blue);box-shadow:var(--shadow-md);transform:translateY(-2px);}
+.f-card .f-name{font-size:0.88rem;font-weight:600;margin-bottom:0.55rem;line-height:1.35;padding-right:4.5rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.f-card .f-meta{display:flex;gap:1rem;flex-wrap:wrap;}
+.f-card .f-meta-item{font-size:0.7rem;color:var(--text3);display:flex;align-items:center;gap:0.25rem;}
+.f-card .f-meta-item strong{color:var(--text2);font-weight:600;}
+.f-tag{position:absolute;top:1rem;right:1rem;padding:0.15rem 0.5rem;border-radius:10px;font-size:0.6rem;font-weight:700;text-transform:uppercase;letter-spacing:0.4px;}
+.f-tag.deployed{background:var(--green-light);color:var(--green);}
+.f-tag.draft{background:var(--amber-light);color:var(--amber);}
+
+/* Dashboard */
+.dash{padding:1.5rem 2rem 3rem;max-width:1280px;margin:0 auto;}
+.crumb{display:flex;align-items:center;gap:0.5rem;font-size:0.75rem;color:var(--text3);margin-bottom:0.75rem;}
+.crumb a{color:var(--blue);text-decoration:none;cursor:pointer;font-weight:500;}
+.crumb a:hover{text-decoration:underline;}
+.d-title{font-size:1.05rem;font-weight:700;margin-bottom:0.15rem;}
+.d-updated{font-size:0.7rem;color:var(--text3);margin-bottom:1.25rem;}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:0.85rem;margin-bottom:1.35rem;}
+.s-card{background:#fff;border:1.5px solid var(--border);border-radius:var(--radius);padding:1.1rem 1.15rem;}
+.s-card:hover{border-color:var(--blue);}
+.s-card .s-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:0.9rem;margin-bottom:0.65rem;}
+.s-card .s-val{font-size:1.55rem;font-weight:700;font-family:var(--mono);letter-spacing:-1px;}
+.s-card .s-lbl{font-size:0.65rem;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:0.6px;margin-top:0.15rem;}
+.ctrls{display:flex;gap:0.65rem;margin-bottom:1.15rem;flex-wrap:wrap;}
+.srch-box{flex:1;min-width:230px;position:relative;}
+.srch-box input{width:100%;padding:0.6rem 1rem 0.6rem 2.2rem;background:#fff;border:1.5px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:var(--font);font-size:0.8rem;outline:none;}
+.srch-box input:focus{border-color:var(--blue);}
+.srch-box input::placeholder{color:var(--text3);}
+.srch-box .ico{position:absolute;left:0.75rem;top:50%;transform:translateY(-50%);color:var(--text3);font-size:0.82rem;}
+.sel{padding:0.6rem 0.9rem;background:#fff;border:1.5px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:var(--font);font-size:0.78rem;outline:none;cursor:pointer;min-width:130px;}
+.btn-a{padding:0.6rem 1rem;background:#fff;border:1.5px solid var(--border);border-radius:var(--radius-sm);color:var(--text2);font-family:var(--font);font-size:0.78rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:0.35rem;transition:all 0.15s;}
+.btn-a:hover{border-color:var(--blue);color:var(--blue);}
+.btn-e{padding:0.6rem 1rem;background:var(--green-light);border:1.5px solid rgba(5,150,105,0.2);border-radius:var(--radius-sm);color:var(--green);font-family:var(--font);font-size:0.78rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:0.35rem;}
+.btn-e:hover{background:rgba(5,150,105,0.12);}
+.tbl-wrap{background:#fff;border:1.5px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);}
+.tbl-scroll{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:0.78rem;}
+thead th{padding:0.75rem 0.85rem;text-align:left;font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:var(--text3);border-bottom:1.5px solid var(--border);background:var(--bg);white-space:nowrap;cursor:pointer;user-select:none;}
+thead th:hover{color:var(--text2);}
+tbody tr{border-bottom:1px solid var(--bg3);transition:background 0.1s;}
+tbody tr:hover{background:var(--blue-light);}
+tbody tr:last-child{border-bottom:none;}
+tbody td{padding:0.65rem 0.85rem;white-space:nowrap;color:var(--text2);}
+td.rn{font-family:var(--mono);font-weight:600;color:var(--blue);font-size:0.76rem;}
+td.nm{color:var(--text);font-weight:500;}
+.pill{display:inline-block;padding:0.15rem 0.5rem;border-radius:10px;font-size:0.62rem;font-weight:700;text-transform:uppercase;}
+.pill.complete{background:var(--green-light);color:var(--green);}
+.pill.pending{background:var(--amber-light);color:var(--amber);}
+.pag{display:flex;align-items:center;justify-content:space-between;padding:0.7rem 0.85rem;border-top:1.5px solid var(--border);font-size:0.72rem;color:var(--text3);}
+.pag-btns{display:flex;gap:0.25rem;}
+.pag-btns button{padding:0.3rem 0.6rem;background:#fff;border:1px solid var(--border);border-radius:6px;color:var(--text2);font-family:var(--font);font-size:0.7rem;cursor:pointer;}
+.pag-btns button:hover{border-color:var(--blue);color:var(--blue);}
+.pag-btns button.on{background:var(--blue);border-color:var(--blue);color:#fff;}
+.pag-btns button:disabled{opacity:0.3;cursor:not-allowed;}
+.empty{padding:3rem;text-align:center;color:var(--text3);font-size:0.82rem;}
+.empty .ei{font-size:1.8rem;margin-bottom:0.6rem;}
+.ld{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:5rem 2rem;text-align:center;}
+.spin{width:34px;height:34px;border:3px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:sp 0.65s linear infinite;margin-bottom:1rem;}
+@keyframes sp{to{transform:rotate(360deg);}}
+.mo{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.35);backdrop-filter:blur(3px);z-index:200;align-items:center;justify-content:center;}.mo.open{display:flex;}
+.mod{background:#fff;border:1px solid var(--border);border-radius:16px;padding:1.75rem;max-width:520px;width:92%;max-height:80vh;overflow-y:auto;box-shadow:var(--shadow-md);}
+.mod h3{font-size:0.95rem;font-weight:700;margin-bottom:1.15rem;display:flex;align-items:center;justify-content:space-between;}
+.mod-x{background:none;border:none;color:var(--text3);font-size:1.1rem;cursor:pointer;}
+.dg{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;}
+.di{padding:0.65rem;background:var(--bg);border-radius:var(--radius-sm);border:1px solid var(--border);}
+.di .dl{font-size:0.62rem;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.2rem;}
+.di .dv{font-size:0.82rem;color:var(--text);font-weight:500;word-break:break-word;}
+@media(max-width:900px){.stats{grid-template-columns:repeat(2,1fr);}.dash,.forms-page{padding:1rem;}.header{padding:0.75rem 1rem;}}
+@media(max-width:550px){.stats{grid-template-columns:1fr;}.dg{grid-template-columns:1fr;}.forms-grid{grid-template-columns:1fr;}}
+@keyframes up{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.fi{animation:up 0.3s ease forwards;}
+</style>
+</head>
+<body>
+<div class="app">
+  <div id="LS" class="login-screen">
+    <div class="login-box">
+      <div class="login-icon">FAP</div>
+      <h2>Family Adoption Programme</h2>
+      <p class="sub">Data Collection Dashboard · KoboToolbox</p>
+      <input type="password" id="pwIn" placeholder="Enter access password" onkeydown="if(event.key==='Enter')login()"/>
+      <button class="login-btn" onclick="login()">Access Dashboard</button>
+      <div class="login-error" id="lErr">Incorrect password. Try again.</div>
+    </div>
+  </div>
+  <div id="MC" class="main">
+    <div class="header">
+      <div class="header-left">
+        <div class="h-logo">FAP</div>
+        <div><div class="h-title">Family Adoption Programme</div><div class="h-sub" id="hSub">KoboToolbox · All Forms</div></div>
+      </div>
+      <div class="header-right">
+        <div class="badge loading" id="bdg"><span class="dot"></span><span id="bdgT">Connecting...</span></div>
+        <button class="btn-sm" onclick="logout()">Logout</button>
+      </div>
+    </div>
+    <div class="ld" id="ldO"><div class="spin"></div><div style="color:var(--text2);font-size:0.82rem;" id="ldT">Fetching your forms...</div></div>
+    <div id="FP" class="forms-page" style="display:none;">
+      <h2>📋 Your Forms</h2>
+      <p class="pg-sub">Select any form to view its submitted data</p>
+      <div class="f-search-wrap"><span class="ico">🔍</span><input type="text" class="f-search" id="fSrch" placeholder="Search forms..." oninput="filterForms()"/></div>
+      <div class="forms-grid" id="fGrid"></div>
+    </div>
+    <div id="DP" class="dash" style="display:none;">
+      <div class="crumb"><a onclick="goBack()">← All Forms</a><span>›</span><span id="crN">Form</span></div>
+      <div class="d-title" id="dT">Form</div>
+      <div class="d-updated" id="dU">Last updated: —</div>
+      <div class="stats">
+        <div class="s-card"><div class="s-icon" style="background:var(--blue-light);color:var(--blue);">📋</div><div class="s-val" id="sTotal">0</div><div class="s-lbl">Total Submissions</div></div>
+        <div class="s-card"><div class="s-icon" style="background:var(--green-light);color:var(--green);">✅</div><div class="s-val" id="sComp">0</div><div class="s-lbl">Complete</div></div>
+        <div class="s-card"><div class="s-icon" style="background:var(--amber-light);color:var(--amber);">⏳</div><div class="s-val" id="sPend">0</div><div class="s-lbl">Pending</div></div>
+        <div class="s-card"><div class="s-icon" style="background:var(--purple-light);color:var(--purple);">📅</div><div class="s-val" id="sToday">0</div><div class="s-lbl">Today</div></div>
+      </div>
+      <div class="ctrls">
+        <div class="srch-box"><span class="ico">🔍</span><input type="text" id="sIn" placeholder="Search by Roll Number, Name, or any field..." oninput="filterData()"/></div>
+        <select class="sel" id="sFilt" onchange="filterData()"><option value="all">All Status</option><option value="complete">Complete</option><option value="pending">Pending</option></select>
+        <button class="btn-a" onclick="loadForm(curUid)">🔄 Refresh</button>
+        <button class="btn-e" onclick="expCSV()">⬇ Export CSV</button>
+      </div>
+      <div class="tbl-wrap"><div class="tbl-scroll"><table><thead><tr id="tH"></tr></thead><tbody id="tB"></tbody></table></div><div class="pag" id="pag"></div></div>
+    </div>
+  </div>
+  <div class="mo" id="moO" onclick="if(event.target===this)this.classList.remove('open')">
+    <div class="mod" onclick="event.stopPropagation()">
+      <h3><span id="moT">Detail</span><button class="mod-x" onclick="$('moO').classList.remove('open')">✕</button></h3>
+      <div class="dg" id="moB"></div>
+    </div>
+  </div>
+</div>
+<script>
+// ═══════════════════════════════════════
+//  CONFIG
+// ═══════════════════════════════════════
+const C={
+  PW:'FAP2026',
+  TK:'e958e28768f7276fa9c32680e0b11694be66e234',
+  SV:'https://eu.kobotoolbox.org',
+};
+// ═══════════════════════════════════════
+
+// CORS Proxies (tries multiple, falls back)
+const PROXIES=[
+  url=>`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+  url=>`https://corsproxy.io/?url=${encodeURIComponent(url)}`,
+  url=>`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
+];
+
+async function corsGet(url){
+  // Try direct first
+  try{
+    const r=await fetch(url,{headers:{'Authorization':`Token ${C.TK}`}});
+    if(r.ok)return await r.json();
+  }catch(e){}
+
+  // Try each proxy
+  for(const proxy of PROXIES){
+    try{
+      const pUrl=proxy(url);
+      const r=await fetch(pUrl,{headers:{'Authorization':`Token ${C.TK}`}});
+      if(r.ok){
+        const txt=await r.text();
+        try{return JSON.parse(txt);}catch(e){continue;}
+      }
+    }catch(e){continue;}
+  }
+
+  // Try allorigins JSON wrapper as last resort
+  try{
+    const r=await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url+'&token='+C.TK)}`);
+    if(r.ok){const j=await r.json();return JSON.parse(j.contents);}
+  }catch(e){}
+
+  throw new Error('All connection methods failed. Please try again later.');
+}
+
+let forms=[],fForms=[],data=[],fData=[],cols=[];
+let pg=1,pSz=20,sC=null,sD='asc',curUid=null,curName='';
+function $(id){return document.getElementById(id);}
+function setBdg(c,t){$('bdg').className='badge '+c;$('bdgT').textContent=t;}
+function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
+function fmtD(v){if(!v)return'—';try{const d=new Date(v);return isNaN(d)?v:d.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})+' '+d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});}catch{return v;}}
+function isDt(k){return/date|time|submitted|तारीख|दिनांक/i.test(k);}
+function getSt(r){return r._validation_status&&r._validation_status.uid&&r._validation_status.uid!=='validation_status_approved'?'pending':'complete';}
+
+// Auth
+function login(){
+  if($('pwIn').value.trim()===C.PW){
+    $('LS').style.display='none';$('MC').classList.add('visible');
+    sessionStorage.setItem('fap_in','1');fetchForms();
+  }else{$('lErr').style.display='block';$('pwIn').value='';$('pwIn').focus();}
+}
+function logout(){sessionStorage.removeItem('fap_in');$('MC').classList.remove('visible');$('LS').style.display='flex';$('pwIn').value='';$('lErr').style.display='none';}
+if(sessionStorage.getItem('fap_in')==='1'){$('LS').style.display='none';$('MC').classList.add('visible');setTimeout(fetchForms,200);}
+
+// Fetch Forms
+async function fetchForms(){
+  setBdg('loading','Connecting...');$('ldO').style.display='flex';$('ldT').textContent='Fetching your forms...';
+  $('FP').style.display='none';$('DP').style.display='none';
+  try{
+    const j=await corsGet(`${C.SV}/api/v2/assets/?format=json&asset_type=survey&limit=500`);
+    forms=(j.results||[]).map(f=>({uid:f.uid,name:f.name||'Untitled',subs:f.deployment__submission_count||0,deployed:f.has_deployment,modified:f.date_modified}));
+    forms.sort((a,b)=>a.deployed&&!b.deployed?-1:!a.deployed&&b.deployed?1:b.subs-a.subs);
+    fForms=[...forms];
+    setBdg('ok',forms.length+' forms');$('ldO').style.display='none';showForms();
+  }catch(e){
+    setBdg('err','Failed');
+    $('ldO').innerHTML=`<div style="color:var(--rose);font-size:1.4rem;margin-bottom:1rem;">⚠️</div>
+    <div style="color:var(--text2);font-size:0.85rem;margin-bottom:0.5rem;">Could not connect to KoboToolbox</div>
+    <div style="color:var(--text3);font-size:0.75rem;max-width:420px;">${e.message}<br><br>If this persists, try refreshing the page or using a different browser (Chrome works best).</div>
+    <button class="btn-a" onclick="location.reload()" style="margin-top:1.25rem;">🔄 Reload Page</button>`;
+  }
+}
+
+// Forms Page
+function showForms(){$('FP').style.display='block';$('DP').style.display='none';$('hSub').textContent='KoboToolbox · All Forms';renderForms();}
+function filterForms(){const q=$('fSrch').value.toLowerCase();fForms=forms.filter(f=>!q||f.name.toLowerCase().includes(q));renderForms();}
+function renderForms(){
+  const g=$('fGrid');
+  if(!fForms.length){g.innerHTML='<div class="empty"><div class="ei">📭</div>No forms found</div>';return;}
+  g.innerHTML=fForms.map(f=>`<div class="f-card fi" onclick="loadForm('${f.uid}')">
+    <span class="f-tag ${f.deployed?'deployed':'draft'}">${f.deployed?'Deployed':'Draft'}</span>
+    <div class="f-name">${esc(f.name)}</div>
+    <div class="f-meta">
+      <div class="f-meta-item">📊 <strong>${f.subs}</strong> submissions</div>
+      <div class="f-meta-item">📅 ${fmtD(f.modified)}</div>
+    </div>
+  </div>`).join('');
+}
+
+// Load Form Data
+async function loadForm(uid){
+  curUid=uid;const fm=forms.find(f=>f.uid===uid);curName=fm?fm.name:uid;
+  $('FP').style.display='none';$('DP').style.display='none';
+  $('ldO').style.display='flex';$('ldO').innerHTML=`<div class="spin"></div><div style="color:var(--text2);font-size:0.82rem;">Loading "${esc(curName)}"...</div>`;
+  $('hSub').textContent=curName;
+  try{
+    const j=await corsGet(`${C.SV}/api/v2/assets/${uid}/data/?format=json&limit=30000`);
+    data=j.results||[];cols=guessCols(data);fData=[...data];pg=1;sC=null;sD='asc';
+    $('dT').textContent=curName;$('crN').textContent=curName;
+    $('dU').textContent='Last updated: '+new Date().toLocaleString('en-IN');
+    $('sIn').value='';$('sFilt').value='all';
+    $('ldO').style.display='none';$('DP').style.display='block';
+    updStats();rTbl();
+  }catch(e){
+    $('ldO').innerHTML=`<div style="color:var(--rose);font-size:1.4rem;margin-bottom:1rem;">⚠️</div>
+    <div style="color:var(--text2);font-size:0.82rem;">Failed to load data</div>
+    <div style="color:var(--text3);font-size:0.75rem;">${e.message}</div>
+    <button class="btn-a" onclick="goBack();$('ldO').style.display='none';" style="margin-top:1rem;">← Back</button>
+    <button class="btn-a" onclick="loadForm('${uid}')" style="margin-top:0.5rem;">🔄 Try Again</button>`;
+  }
+}
+function goBack(){showForms();$('ldO').style.display='none';}
+
+// Column Detection
+function guessCols(d){
+  if(!d.length)return[];
+  const k=Object.keys(d[0]),pr=[];
+  const rk=k.find(x=>/roll|number|reg|enroll|sr|serial|no|क्रमांक|अनुक्रमांक/i.test(x)&&!/^_/.test(x)&&!/phone|mob|contact|aadhar|aadhaar|pin/i.test(x));
+  const nk=k.find(x=>/name|नाम|student|participant|patient|व्यक्ती|respondent/i.test(x)&&!/^_/.test(x)&&!/father|mother|spouse|पिता|माता|guardian/i.test(x));
+  const dk=k.find(x=>/date|time|submitted|तारीख|दिनांक/i.test(x)&&!/^_/.test(x))||'_submission_time';
+  if(rk)pr.push(rk);if(nk)pr.push(nk);
+  const skip=new Set(['_id','_uuid','_submission_time','_xform_id_string','_geolocation','_status','_tags','_notes','_validation_status','formhub/uuid','meta/instanceID','__version__','_attachments','_bamboo_dataset_id']);
+  const rest=k.filter(x=>!pr.includes(x)&&!skip.has(x)&&!x.startsWith('_')&&!x.startsWith('formhub')&&!x.startsWith('meta/'));
+  if(dk&&!pr.includes(dk))pr.push(dk);
+  return[...pr,...rest.slice(0,8)];
+}
+
+// Stats
+function updStats(){
+  $('sTotal').textContent=fData.length;
+  const c=fData.filter(r=>getSt(r)==='complete').length;
+  $('sComp').textContent=c;$('sPend').textContent=fData.length-c;
+  const td=new Date().toISOString().slice(0,10);
+  $('sToday').textContent=fData.filter(r=>(r._submission_time||'').startsWith(td)).length;
+}
+
+// Filter & Sort
+function filterData(){
+  const q=$('sIn').value.toLowerCase().trim(),sf=$('sFilt').value;
+  fData=data.filter(row=>{
+    if(sf!=='all'&&getSt(row)!==sf)return false;
+    if(!q)return true;
+    return Object.values(row).some(v=>v!=null&&String(v).toLowerCase().includes(q));
+  });
+  pg=1;updStats();rTbl();
+}
+function sortBy(c){
+  if(sC===c)sD=sD==='asc'?'desc':'asc';else{sC=c;sD='asc';}
+  fData.sort((a,b)=>{let va=a[c]??'',vb=b[c]??'';if(typeof va==='string')va=va.toLowerCase();if(typeof vb==='string')vb=vb.toLowerCase();return va<vb?(sD==='asc'?-1:1):va>vb?(sD==='asc'?1:-1):0;});
+  rTbl();
+}
+
+// Render Table
+function rTbl(){
+  const th=$('tH'),tb=$('tB');
+  let h='<th style="width:34px">#</th>';
+  cols.forEach(c=>{const l=c.replace(/[/_]/g,' ').replace(/\b\w/g,x=>x.toUpperCase());h+=`<th onclick="sortBy('${c}')">${l}<span style="margin-left:3px;font-size:0.55rem;">${sC===c?(sD==='asc'?' ▲':' ▼'):''}</span></th>`;});
+  h+='<th>Status</th><th></th>';th.innerHTML=h;
+  const st=(pg-1)*pSz,pd=fData.slice(st,st+pSz);
+  if(!pd.length){tb.innerHTML=`<tr><td colspan="${cols.length+3}"><div class="empty"><div class="ei">📭</div>No submissions found</div></td></tr>`;}
+  else{
+    let b='';
+    pd.forEach((row,i)=>{
+      b+='<tr>';b+=`<td style="color:var(--text3);font-size:0.7rem;">${st+i+1}</td>`;
+      cols.forEach((c,ci)=>{
+        let v=row[c]??'—',cl='';
+        if(ci===0&&/roll|number|reg|enroll|sr|serial|no|क्रमांक/i.test(c)&&!/phone|mob|contact/i.test(c))cl='rn';
+        else if(ci<=1&&/name|नाम|student|patient|participant/i.test(c)&&!/father|mother|spouse/i.test(c))cl='nm';
+        if(isDt(c))v=fmtD(v);if(typeof v==='object')v=JSON.stringify(v);
+        b+=`<td class="${cl}">${esc(String(v))}</td>`;
+      });
+      b+=`<td><span class="pill ${getSt(row)}">${getSt(row)}</span></td>`;
+      b+=`<td><button style="background:var(--blue-light);border:1px solid rgba(37,99,235,0.15);border-radius:6px;padding:0.22rem 0.55rem;color:var(--blue);cursor:pointer;font-size:0.68rem;font-weight:600;font-family:var(--font);" onclick="showDet(${row._id||i})">View</button></td>`;
+      b+='</tr>';
+    });
+    tb.innerHTML=b;
+  }
+  rPag();
+}
+function rPag(){
+  const el=$('pag'),t=fData.length,tp=Math.ceil(t/pSz)||1,s=(pg-1)*pSz+1,e=Math.min(pg*pSz,t);
+  let h=`<span>${t?s:0}–${e} of ${t}</span><div class="pag-btns">`;
+  h+=`<button ${pg<=1?'disabled':''} onclick="goPg(${pg-1})">←</button>`;
+  let sp=Math.max(1,pg-3),ep=Math.min(tp,sp+6);if(ep-sp<6)sp=Math.max(1,ep-6);
+  for(let p=sp;p<=ep;p++)h+=`<button class="${p===pg?'on':''}" onclick="goPg(${p})">${p}</button>`;
+  if(ep<tp)h+=`<button disabled>…</button><button onclick="goPg(${tp})">${tp}</button>`;
+  h+=`<button ${pg>=tp?'disabled':''} onclick="goPg(${pg+1})">→</button></div>`;
+  el.innerHTML=h;
+}
+function goPg(p){pg=p;rTbl();document.querySelector('.tbl-wrap').scrollIntoView({behavior:'smooth',block:'start'});}
+
+// Detail Modal
+function showDet(id){
+  const row=fData.find(r=>(r._id||0)===id)||fData[id];if(!row)return;
+  const nk=Object.keys(row).find(k=>/name|नाम|student|patient|participant/i.test(k)&&!/^_/.test(k)&&!/father|mother|spouse/i.test(k));
+  $('moT').textContent=nk?row[nk]:'Submission Detail';
+  const skip=new Set(['_attachments','_geolocation','formhub/uuid','meta/instanceID','__version__','_xform_id_string','_bamboo_dataset_id','_tags','_notes']);
+  let html='';
+  Object.entries(row).forEach(([k,v])=>{
+    if(skip.has(k)||v==null||v==='')return;
+    const l=k.replace(/[/_]/g,' ').replace(/^\s+/,'').replace(/\b\w/g,x=>x.toUpperCase());
+    let val=typeof v==='object'?JSON.stringify(v):String(v);
+    if(isDt(k))val=fmtD(v);
+    html+=`<div class="di"><div class="dl">${esc(l)}</div><div class="dv">${esc(val)}</div></div>`;
+  });
+  $('moB').innerHTML=html;$('moO').classList.add('open');
+}
+
+// Export CSV
+function expCSV(){
+  if(!fData.length)return;
+  const ks=Object.keys(fData[0]).filter(k=>!k.startsWith('_')&&!k.startsWith('formhub')&&!k.startsWith('meta/'));
+  let csv=ks.join(',')+'\n';
+  fData.forEach(row=>{csv+=ks.map(k=>{let v=row[k]??'';if(typeof v==='object')v=JSON.stringify(v);return`"${String(v).replace(/"/g,'""')}"`}).join(',')+'\n';});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
+  a.download=curName.replace(/[^a-zA-Z0-9]/g,'_')+'_'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click();
+}
+</script>
+</body>
+</html>
